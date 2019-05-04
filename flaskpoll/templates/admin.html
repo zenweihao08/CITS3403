@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+    {% if title %}
+        <title>Admin - {{ title }}</title>
+    {% else %}
+        <title>Admin</title>
+    {% endif %}
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="/">Vote Yours</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+               <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Polls</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+              </li>
+              <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+              <a class="nav-item nav-link" href="{{ url_for('movies') }}">Movie</a>
+              <a class="nav-item nav-link" href="{{ url_for('musics') }}">Music</a>
+              <a class="nav-item nav-link" href="{{ url_for('games') }}">Game</a>
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+              {% if current_user.is_authenticated %}
+                <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+                <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+              {% else %}
+                <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+                <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+        </div>
+      </div>
+      
+	    <table id="table_id" class="display">
+	    	<thead>
+	    		<tr>
+	    			<th>Movie ID</th>
+					<th>Movie Title</th>
+				    <th>Release Date</th>
+				    <th>Director</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for movie in movies %}
+				<tr>
+					<th>{{movie.id}}</th>
+					<th>{{movie.movie_title}}</th>
+				   	<th>{{movie.movie_release_date}}</th>
+				    <th>{{movie.movie_director}}</th>
+				</tr>
+				{% endfor %}
+			</tbody>
+			<thead>
+	    		<tr>
+	    			<th>Music ID</th>
+					<th>Music Title</th>
+				    <th>Release Date</th>
+				    <th>Singer</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for music in musics %}
+				<tr>
+					<th>{{music.id}}</th>
+					<th>{{music.music_title}}</th>
+				   	<th>{{music.music_debut_date}}</th>
+				    <th>{{music.singer}}</th>
+				</tr>
+				{% endfor %}
+			</tbody>
+			<thead>
+	    		<tr>
+	    			<th>Game ID</th>
+					<th>Game Title</th>
+				    <th>Release Date</th>
+				    <th>Production Company</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for game in games %}
+				<tr>
+					<th>{{game.id}}</th>
+					<th>{{game.game_title}}</th>
+				   	<th>{{game.game_release_date}}</th>
+				    <th>{{game.production_company}}</th>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="dropdown">
+		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Add
+		  </button>
+		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		    <a class="dropdown-item" href="{{ url_for('add_movie') }}">Add movie</a>
+		    <a class="dropdown-item" href="{{ url_for('add_music') }}">Add music</a>
+		    <a class="dropdown-item" href="{{ url_for('add_game') }}">Add game</a>
+		  </div>
+		</div>
+		<div class="dropdown">
+		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Delete
+		  </button>
+		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		    <a class="dropdown-item" href="{{ url_for('del_movie') }}">Delete movie</a>
+		    <a class="dropdown-item" href="{{ url_for('del_music') }}">Delete music</a>
+		    <a class="dropdown-item" href="{{ url_for('del_game') }}">Delete game</a>
+		  </div>
+		</div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready( function () {
+          $('#table_id').DataTable();
+      } );
+    </script>
+</body>
+</html>
